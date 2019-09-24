@@ -20,7 +20,6 @@ public class TSP extends Thread {
         //System.out.println("Hilo: " + this.getName() + " " + poblacion);
         //System.out.println("Hilo: " + this.getName() + " " + poblacion.get(obtenerMejor(poblacion)));
         for(int i=0;i < generaciones;i++){
-            System.out.println("Hilo: " + this.getName() + " " + poblacion);
             ArrayList<Individuo> nP = new ArrayList<>();
 
             //Cruza
