@@ -19,29 +19,34 @@ public class TSP extends Thread {
         evaluarPoblacion(poblacion);
         //System.out.println("Hilo: " + this.getName() + " " + poblacion);
         //System.out.println("Hilo: " + this.getName() + " " + poblacion.get(obtenerMejor(poblacion)));
-        for (int i = 0; i < generaciones; i++) {
+        for(int i=0;i < generaciones;i++){
+            System.out.println("Hilo: " + this.getName() + " " + poblacion);
             ArrayList<Individuo> nP = new ArrayList<>();
-            
+
             //Cruza
             cruzaPoblacion();
             //Unir
             unirPoblacion();
             evaluarPoblacion(poblacion);
-            
+
             //Elitismo
             nP.add(poblacion.get(obtenerMejor(poblacion)));
-            
+
             //Muta
             mutarPoblacion(poblacion, mutacion);
-            
+
             //Creo nuevos Indices
             Seleccionar seleccionador = new Seleccionar(poblacion, new Random());
             ArrayList<Integer> indices = seleccionador.seleccionEstocasticaSinRemplazo(poblacion.size());
+
             while (nP.size() < tamPoblacion) {
                 nP.add(poblacion.get(new Random().nextInt(indices.size())));
             }
+
             poblacion = nP;
+            
         }
+    
     }
 
     public TSP(ArrayList<Ciudad> ciudades, int itereaciones, double mutacion, int tamPoblacion) {
@@ -137,7 +142,7 @@ public class TSP extends Thread {
     private void cruzaPoblacion() {
         hijos.clear();
         Seleccionar seleccionador = new Seleccionar(poblacion, new Random());
-        ArrayList<Integer> indices = seleccionador.seleccionRuleta(poblacion.size());
+        ArrayList<Integer> indices = seleccionador.seleccionEstocasticaSinRemplazo(poblacion.size());
 
         for (int i = 0; i < poblacion.size(); i++) {
             int p = new Random().nextInt(indices.size());

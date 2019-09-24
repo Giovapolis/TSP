@@ -3,7 +3,6 @@ package Ventanas;
 import AG.Ciudad;
 import AG.Individuo;
 import AG.TSP;
-import java.awt.Graphics;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
@@ -38,7 +37,7 @@ public class Ventana extends javax.swing.JFrame {
         mejores = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         MejorDeMejores = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        btn_limpiar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TSP");
@@ -84,11 +83,13 @@ public class Ventana extends javax.swing.JFrame {
         jLabel1.setText("Generaciones:");
 
         generaciones.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        generaciones.setText("30");
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("% Mutacion:");
 
         mutacion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        mutacion.setText(".5");
         mutacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mutacionActionPerformed(evt);
@@ -99,6 +100,12 @@ public class Ventana extends javax.swing.JFrame {
         jLabel3.setText("# Individuos:");
 
         individuos.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        individuos.setText("100");
+        individuos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                individuosActionPerformed(evt);
+            }
+        });
 
         btn_reinicio.setText("REINICIAR");
         btn_reinicio.addActionListener(new java.awt.event.ActionListener() {
@@ -114,10 +121,10 @@ public class Ventana extends javax.swing.JFrame {
         MejorDeMejores.setRows(5);
         jScrollPane2.setViewportView(MejorDeMejores);
 
-        jButton1.setText("LIMPIAR");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_limpiar.setText("LIMPIAR");
+        btn_limpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_limpiarActionPerformed(evt);
             }
         });
 
@@ -149,7 +156,7 @@ public class Ventana extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btn_reinicio, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(btn_limpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -179,7 +186,7 @@ public class Ventana extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btn_reinicio)
-                            .addComponent(jButton1))
+                            .addComponent(btn_limpiar))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_iniciar))
                     .addComponent(plano, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -201,33 +208,37 @@ public class Ventana extends javax.swing.JFrame {
     private void btn_iniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_iniciarActionPerformed
         plano.getGraphics().clearRect(1, 1, plano.getWidth() - 3, plano.getHeight() - 3);
         dibujarCiudades();
-        TSP[] Hilos = new TSP[4];
-        for (int i = 0; i < Hilos.length; i++) {
-            Hilos[i] = new TSP(ciudades,
-                    Integer.parseInt(generaciones.getText()),
-                    Double.parseDouble(mutacion.getText()),
-                    Integer.parseInt(individuos.getText())
-            );
-            Hilos[i].start();
-        }
-        for (int i = 0; i < Hilos.length; i++) {
-            try {
-                Hilos[i].join();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+        if (ciudades.size() > 2) {
+            TSP[] Hilos = new TSP[4];
+            for (int i = 0; i < Hilos.length; i++) {
+                Hilos[i] = new TSP(ciudades,
+                        Integer.parseInt(generaciones.getText()),
+                        Double.parseDouble(mutacion.getText()),
+                        Integer.parseInt(individuos.getText())
+                );
+                Hilos[i].start();
             }
-        }
+            for (int i = 0; i < Hilos.length; i++) {
+                try {
+                    Hilos[i].join();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
 
-        DefaultListModel ModeloLista = new DefaultListModel();
-        ArrayList<Individuo> mejores = new ArrayList<>();
-        for (TSP Hilo : Hilos) {
-            mejores.add(Hilo.getPoblacion().get(Hilo.obtenerMejor(Hilo.getPoblacion())));
-            ModeloLista.addElement(Hilo.getPoblacion().get(Hilo.obtenerMejor(Hilo.getPoblacion())));
-            this.mejores.setModel(ModeloLista);
-        }
+            DefaultListModel ModeloLista = new DefaultListModel();
+            ArrayList<Individuo> mejores = new ArrayList<>();
+            for (TSP Hilo : Hilos) {
+                mejores.add(Hilo.getPoblacion().get(Hilo.obtenerMejor(Hilo.getPoblacion())));
+                ModeloLista.addElement(Hilo.getPoblacion().get(Hilo.obtenerMejor(Hilo.getPoblacion())));
+                this.mejores.setModel(ModeloLista);
+            }
 
-        dibujarRuta(mejores.get(Hilos[0].obtenerMejor(mejores)).getRuta());
-        MejorDeMejores.setText("Mejor De Mejores:\n" + mejores.get(Hilos[0].obtenerMejor(mejores)));
+            dibujarRuta(mejores.get(Hilos[0].obtenerMejor(mejores)).getRuta());
+            MejorDeMejores.setText("Mejor De Mejores:\n" + mejores.get(Hilos[0].obtenerMejor(mejores)));
+        } else {
+            JOptionPane.showMessageDialog(null, "Ingresa al menos 3 Ciudades!!!");
+        }
     }//GEN-LAST:event_btn_iniciarActionPerformed
 
     private void mutacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mutacionActionPerformed
@@ -243,22 +254,26 @@ public class Ventana extends javax.swing.JFrame {
 
     }//GEN-LAST:event_planoPropertyChange
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btn_limpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_limpiarActionPerformed
         ciudades.clear();
         plano.getGraphics().clearRect(1, 1, plano.getWidth() - 3, plano.getHeight() - 3);
         MejorDeMejores.setText("");
         DefaultListModel ModeloLista = new DefaultListModel();
         this.mejores.setModel(ModeloLista);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btn_limpiarActionPerformed
+
+    private void individuosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_individuosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_individuosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea MejorDeMejores;
     private javax.swing.JButton btn_aleatorio;
     private javax.swing.JButton btn_iniciar;
+    private javax.swing.JButton btn_limpiar;
     private javax.swing.JButton btn_reinicio;
     private javax.swing.JTextField generaciones;
     private javax.swing.JTextField individuos;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

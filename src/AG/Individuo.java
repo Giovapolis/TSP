@@ -39,7 +39,7 @@ public class Individuo {
         hijos.add(this);
         hijos.add(m);
 
-        for (int i = 0; i < new Random().nextInt(ruta.size()/2); i++) {
+        for (int i = 0; i < new Random().nextInt(ruta.size()); i++) {
             int idx = new Random().nextInt(ruta.size());
             Ciudad remplazarDeA = hijos.get(0).ruta.get(idx);
             Ciudad remplazarDeB = hijos.get(1).ruta.get(idx);
@@ -53,7 +53,7 @@ public class Individuo {
     }
 
     public void muta() {
-        for (int i = 0; i < new Random().nextInt(ruta.size()/2); i++) {
+        for (int i = 0; i < new Random().nextInt(ruta.size()); i++) {
             int idx1 = new Random().nextInt(ruta.size());
             int idx2 = new Random().nextInt(ruta.size());
             Ciudad ciudadA = ruta.get(idx1);
