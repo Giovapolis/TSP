@@ -36,6 +36,9 @@ public class Ventana extends javax.swing.JFrame {
         btn_reinicio = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         mejores = new javax.swing.JList<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        MejorDeMejores = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TSP");
@@ -106,6 +109,18 @@ public class Ventana extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(mejores);
 
+        MejorDeMejores.setEditable(false);
+        MejorDeMejores.setColumns(20);
+        MejorDeMejores.setRows(5);
+        jScrollPane2.setViewportView(MejorDeMejores);
+
+        jButton1.setText("LIMPIAR");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -127,8 +142,15 @@ public class Ventana extends javax.swing.JFrame {
                             .addComponent(mutacion)
                             .addComponent(generaciones)
                             .addComponent(individuos)))
-                    .addComponent(btn_reinicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btn_reinicio, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -151,9 +173,13 @@ public class Ventana extends javax.swing.JFrame {
                             .addComponent(individuos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_reinicio)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_reinicio)
+                            .addComponent(jButton1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_iniciar))
                     .addComponent(plano, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -199,9 +225,9 @@ public class Ventana extends javax.swing.JFrame {
             ModeloLista.addElement(Hilo.getPoblacion().get(Hilo.obtenerMejor(Hilo.getPoblacion())));
             this.mejores.setModel(ModeloLista);
         }
-        
+
         dibujarRuta(mejores.get(Hilos[0].obtenerMejor(mejores)).getRuta());
-        JOptionPane.showMessageDialog(null, "Mejor De Mejores:\n" + mejores.get(Hilos[0].obtenerMejor(mejores)));
+        MejorDeMejores.setText("Mejor De Mejores:\n" + mejores.get(Hilos[0].obtenerMejor(mejores)));
     }//GEN-LAST:event_btn_iniciarActionPerformed
 
     private void mutacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mutacionActionPerformed
@@ -217,16 +243,27 @@ public class Ventana extends javax.swing.JFrame {
 
     }//GEN-LAST:event_planoPropertyChange
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        ciudades.clear();
+        plano.getGraphics().clearRect(1, 1, plano.getWidth() - 3, plano.getHeight() - 3);
+        MejorDeMejores.setText("");
+        DefaultListModel ModeloLista = new DefaultListModel();
+        this.mejores.setModel(ModeloLista);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea MejorDeMejores;
     private javax.swing.JButton btn_aleatorio;
     private javax.swing.JButton btn_iniciar;
     private javax.swing.JButton btn_reinicio;
     private javax.swing.JTextField generaciones;
     private javax.swing.JTextField individuos;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList<String> mejores;
     private javax.swing.JTextField mutacion;
     private javax.swing.JPanel plano;
@@ -262,7 +299,6 @@ public class Ventana extends javax.swing.JFrame {
         for (Ciudad ciudad : ciudades) {
             super.getGraphics().setColor(Color.BLUE);
             plano.getGraphics().fillOval(ciudad.getX(), ciudad.getY(), 10, 10);
-            plano.getGraphics().drawString(ciudad.getNumero(), ciudad.getX(), ciudad.getX());
         }
     }
 }

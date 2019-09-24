@@ -56,10 +56,8 @@ public class Individuo {
         for (int i = 0; i < new Random().nextInt(ruta.size()/2); i++) {
             int idx1 = new Random().nextInt(ruta.size());
             int idx2 = new Random().nextInt(ruta.size());
-
             Ciudad ciudadA = ruta.get(idx1);
             Ciudad ciudadB = ruta.get(idx2);
-
             ruta.set(idx1, ciudadB);
             ruta.set(idx2, ciudadA);
         }

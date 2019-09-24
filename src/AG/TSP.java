@@ -22,20 +22,21 @@ public class TSP extends Thread {
         for (int i = 0; i < generaciones; i++) {
             ArrayList<Individuo> nP = new ArrayList<>();
             
+            //Cruza
             cruzaPoblacion();
-            evaluarPoblacion(hijos);
+            //Unir
+            unirPoblacion();
+            evaluarPoblacion(poblacion);
             
             //Elitismo
             nP.add(poblacion.get(obtenerMejor(poblacion)));
-            nP.add(hijos.get(obtenerMejor(hijos)));
             
+            //Muta
             mutarPoblacion(poblacion, mutacion);
-            mutarPoblacion(hijos, mutacion);
             
             //Creo nuevos Indices
             Seleccionar seleccionador = new Seleccionar(poblacion, new Random());
-            ArrayList<Integer> indices = seleccionador.seleccionRuleta(poblacion.size());
-            System.out.println(indices);
+            ArrayList<Integer> indices = seleccionador.seleccionEstocasticaSinRemplazo(poblacion.size());
             while (nP.size() < tamPoblacion) {
                 nP.add(poblacion.get(new Random().nextInt(indices.size())));
             }
